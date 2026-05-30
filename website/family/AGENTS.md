@@ -1,34 +1,5 @@
 <!-- BEGIN:nextjs-agent-rules -->
-# Guideline
+# This is NOT the Next.js you know
 
-## Project Rules
-
-- Use functional components with hooks
-- Use Tailwind CSS for styling
-- Keep components small and reusable
-- Use meaningful variable names
-- Handle loading and error states properly
-- Follow Next.js App Router structure
-
-## Code Style
-
-- Use typescript
-- Use image tag from Next Image
-- Use arrow functions
-- Prefer async/await over .then()
-- Keep files under 200 lines if possible
-
-## Folder Structure
-
-- /app → routes
-- /components → reusable UI
-- /lib → utilities
-- /hooks → custom hooks 
-
-## Database info
-
-- use demo datasets
-- configure dataset like mogodb atlas
-- create schema in Prisma
-- use Images from free sources like unsplash
-
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
+<!-- END:nextjs-agent-rules -->

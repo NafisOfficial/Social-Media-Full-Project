@@ -1,77 +1,65 @@
 import Image from "next/image";
-import Link from "next/link";
-
-const heroPhoto =
-  "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=1400&q=80";
-
-const featuredFaces = [
-  "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80",
-  "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=200&q=80",
-  "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=200&q=80",
-];
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-warm-beige">
-      <section className="relative h-screen overflow-hidden">
+    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
+      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
         <Image
-          src={heroPhoto}
-          alt="Multigenerational family"
-          fill
-          className="absolute inset-0 object-cover opacity-80"
+          className="dark:invert"
+          src="/next.svg"
+          alt="Next.js logo"
+          width={100}
+          height={20}
           priority
         />
-        <div className="absolute inset-0 bg-linear-to-r from-warm-beige/90 via-warm-beige/50 to-transparent"></div>
-
-        <div className="relative z-10 flex min-h-screen flex-col items-center justify-center px-4 text-center">
-          <p className="mb-4 text-sm uppercase tracking-[0.4em] text-deep-neutral/60">
-            A warm home for your family story
-          </p>
-          <h1 className="text-5xl md:text-7xl font-playfair font-bold text-deep-neutral drop-shadow-[0_4px_30px_rgba(0,0,0,0.12)]">
-            Family
+        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
+          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
+            To get started, edit the page.tsx file.
           </h1>
-          <p className="mx-auto mt-6 max-w-2xl text-lg md:text-xl leading-8 text-deep-neutral/80">
-            Build your family tree, share life stories, and stay connected
-            through memories, albums, and events.
-          </p>
-
-          <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
-            <Link
-              href="/signup"
-              className="bg-terracotta hover:bg-terracotta/90 text-white px-8 py-4 rounded-full font-semibold text-lg transition-colors shadow-lg shadow-terracotta/10"
+          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
+            Looking for a starting point or more instructions? Head over to{" "}
+            <a
+              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
+              className="font-medium text-zinc-950 dark:text-zinc-50"
             >
-              Get Started
-            </Link>
-            <Link
-              href="/login"
-              className="bg-sage-green hover:bg-sage-green/90 text-white px-8 py-4 rounded-full font-semibold text-lg transition-colors shadow-lg shadow-sage-green/10"
+              Templates
+            </a>{" "}
+            or the{" "}
+            <a
+              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
+              className="font-medium text-zinc-950 dark:text-zinc-50"
             >
-              Sign In
-            </Link>
-          </div>
-
-          <div className="mt-14 flex items-center justify-center gap-4">
-            {featuredFaces.map((src, index) => (
-              <div
-                key={index}
-                className="h-16 w-16 rounded-full overflow-hidden border-4 border-white shadow-lg"
-              >
-                <Image
-                  src={src}
-                  alt="Family face"
-                  width={64}
-                  height={64}
-                  className="h-full w-full object-cover"
-                />
-              </div>
-            ))}
-          </div>
-          <p className="mt-4 text-sm text-deep-neutral/70 max-w-md">
-            Share joyful moments, mark milestones, and keep every family memory
-            alive in one beautifully crafted home.
+              Learning
+            </a>{" "}
+            center.
           </p>
         </div>
-      </section>
+        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
+          <a
+            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
+            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Image
+              className="dark:invert"
+              src="/vercel.svg"
+              alt="Vercel logomark"
+              width={16}
+              height={16}
+            />
+            Deploy Now
+          </a>
+          <a
+            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
+            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Documentation
+          </a>
+        </div>
+      </main>
     </div>
   );
 }
