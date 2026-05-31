@@ -6,7 +6,7 @@ Type: Family tree + social storytelling web application
 Core idea: Users build a multi-generational family tree, connect with relatives, and share family stories. Other users can read stories, upvote/downvote, and comment.
 Framework: Next.js 16, App Router, TypeScript strict mode
 UI: ShadCN UI, Tailwind CSS v4
-Package manager: pnpm
+Package manager: npm
 Auth: Custom token-based authentication (JWT, httpOnly cookies)
 DB: MongoDB via Mongoose
 State: TanStack Query (server state), React Context (light client state)
