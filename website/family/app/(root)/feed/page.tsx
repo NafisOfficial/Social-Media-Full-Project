@@ -1,75 +1,80 @@
-'use client';
+"use client";
 
-import { useAuth } from '@/context/AuthContext';
-import { useSweetAlert } from '@/hooks/useSweetAlert';
-import { BookOpen, ArrowRight } from 'lucide-react';
-import Link from 'next/link';
+import { StoryCreateForm } from "@/components/story/StoryCreateForm";
+import { StoryFeed } from "@/components/story/StoryFeed";
+import { useAuth } from "@/context/AuthContext";
+import { BookOpen } from "lucide-react";
+import Link from "next/link";
 
 export default function FeedPage() {
   const { user } = useAuth();
-  const { showInfo } = useSweetAlert();
-
-  const handleCreateStory = async () => {
-    await showInfo('Coming Soon!', 'Story creation feature will be available soon');
-  };
 
   return (
-    <div className="p-8">
-      <div className="max-w-4xl mx-auto">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-800 mb-2">Welcome back, {user?.displayName}!</h1>
-          <p className="text-gray-600">Share your family stories and connect with relatives</p>
-        </div>
-
-        {/* Create Story Card */}
-        <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-          <div className="flex items-center justify-between">
+    <div className="min-h-[calc(100vh-6rem)] bg-slate-50 px-4 py-10 sm:px-6 lg:px-10">
+      <div className="mx-auto w-full max-w-8xl space-y-8">
+        <section className="rounded-[2rem] border border-slate-200 bg-white p-8 shadow-[0_30px_90px_-50px_rgba(15,23,42,0.25)] sm:p-10">
+          <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <h2 className="text-xl font-semibold text-gray-800 mb-2">Share a Story</h2>
-              <p className="text-gray-600">Tell your family's stories and memories</p>
+              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">
+                Family feed
+              </p>
+              <h1 className="mt-3 text-3xl font-semibold text-slate-900">
+                Welcome back, {user?.displayName}!
+              </h1>
+              <p className="mt-2 text-slate-600">
+                Share stories, celebrate family milestones, and keep your
+                relatives connected.
+              </p>
             </div>
-            <button
-              onClick={handleCreateStory}
-              className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold"
+            <a
+              href="#story-form"
+              className="inline-flex items-center gap-2 rounded-2xl bg-emerald-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-emerald-700"
             >
               <BookOpen className="h-5 w-5" />
               New Story
-            </button>
+            </a>
           </div>
-        </div>
+        </section>
 
-        {/* Empty Feed State */}
-        <div className="bg-white rounded-lg shadow-md p-12 text-center">
-          <BookOpen className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-xl font-semibold text-gray-800 mb-2">No stories yet</h3>
-          <p className="text-gray-600 mb-6">Be the first to share a story with your family</p>
-          <button
-            onClick={handleCreateStory}
-            className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold"
-          >
-            Create Your First Story
-            <ArrowRight className="h-4 w-4" />
-          </button>
-        </div>
+        <div className="grid gap-6 xl:grid-cols-[1.5fr_0.9fr]">
+          <div className="space-y-6">
+            <StoryFeed />
+          </div>
 
-        {/* Quick Links */}
-        <div className="grid grid-cols-2 gap-4 mt-8">
-          <Link
-            href="/tree"
-            className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition"
-          >
-            <h3 className="text-lg font-semibold text-gray-800 mb-2">Build Your Family Tree</h3>
-            <p className="text-gray-600 text-sm">Add family members and create relationships</p>
-          </Link>
+          <section className="space-y-6">
+            <StoryCreateForm />
 
-          <Link
-            href="/connections"
-            className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition"
-          >
-            <h3 className="text-lg font-semibold text-gray-800 mb-2">Connect with Family</h3>
-            <p className="text-gray-600 text-sm">Send and manage connection requests</p>
-          </Link>
+            <Link
+              href="/tree"
+              className="block rounded-[2rem] border border-slate-200 bg-white p-8 shadow-sm transition hover:shadow-lg"
+            >
+              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">
+                Family tree
+              </p>
+              <h3 className="mt-4 text-xl font-semibold text-slate-900">
+                Build your family tree
+              </h3>
+              <p className="mt-2 text-slate-600">
+                Add family members, connect relatives, and visualize your
+                heritage.
+              </p>
+            </Link>
+            <Link
+              href="/connections"
+              className="block rounded-[2rem] border border-slate-200 bg-white p-8 shadow-sm transition hover:shadow-lg"
+            >
+              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">
+                Connections
+              </p>
+              <h3 className="mt-4 text-xl font-semibold text-slate-900">
+                Invite relatives
+              </h3>
+              <p className="mt-2 text-slate-600">
+                Send connection requests and manage your family network in one
+                place.
+              </p>
+            </Link>
+          </section>
         </div>
       </div>
     </div>

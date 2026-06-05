@@ -7,7 +7,8 @@ export interface UserDTO {
   avatarUrl: string;
   coverUrl: string;
   dateOfBirth: Date | null;
-  gender: 'male' | 'female' | 'other' | 'prefer_not_to_say';
+  gender: "male" | "female" | "other" | "prefer_not_to_say";
+  isEmailVerified: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -20,7 +21,7 @@ export interface FamilyMemberDTO {
   avatarUrl: string;
   dateOfBirth: Date | null;
   dateOfDeath: Date | null;
-  gender: 'male' | 'female' | 'other' | 'prefer_not_to_say';
+  gender: "male" | "female" | "other" | "prefer_not_to_say";
   bio: string;
   isAlive: boolean;
   createdAt: Date;
@@ -28,22 +29,22 @@ export interface FamilyMemberDTO {
 }
 
 export type RelationshipType =
-  | 'father'
-  | 'mother'
-  | 'son'
-  | 'daughter'
-  | 'spouse'
-  | 'brother'
-  | 'sister'
-  | 'grandfather'
-  | 'grandmother'
-  | 'grandson'
-  | 'granddaughter'
-  | 'uncle'
-  | 'aunt'
-  | 'nephew'
-  | 'niece'
-  | 'cousin';
+  | "father"
+  | "mother"
+  | "son"
+  | "daughter"
+  | "spouse"
+  | "brother"
+  | "sister"
+  | "grandfather"
+  | "grandmother"
+  | "grandson"
+  | "granddaughter"
+  | "uncle"
+  | "aunt"
+  | "nephew"
+  | "niece"
+  | "cousin";
 
 export interface FamilyRelationshipDTO {
   _id: string;
@@ -60,7 +61,7 @@ export interface ConnectionRequestDTO {
   sender: string;
   receiver: string;
   relationshipType: RelationshipType;
-  status: 'pending' | 'accepted' | 'rejected';
+  status: "pending" | "accepted" | "rejected";
   createdAt: Date;
   updatedAt: Date;
 }
@@ -71,7 +72,7 @@ export interface StoryDTO {
   title: string;
   content: string;
   mediaUrls: string[];
-  visibility: 'public' | 'relatives';
+  visibility: "public" | "relatives";
   upvotesCount: number;
   downvotesCount: number;
   commentsCount: number;
@@ -83,7 +84,7 @@ export interface VoteDTO {
   _id: string;
   user: string;
   story: string;
-  type: 'up' | 'down';
+  type: "up" | "down";
   createdAt: Date;
 }
 
@@ -99,7 +100,12 @@ export interface NotificationDTO {
   _id: string;
   recipient: string;
   actor: string;
-  type: 'connection_request' | 'connection_accepted' | 'story_upvote' | 'story_comment' | 'story_downvote';
+  type:
+    | "connection_request"
+    | "connection_accepted"
+    | "story_upvote"
+    | "story_comment"
+    | "story_downvote";
   story: string | null;
   connectionRequest: string | null;
   isRead: boolean;

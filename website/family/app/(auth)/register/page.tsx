@@ -1,196 +1,247 @@
-'use client';
+"use client";
 
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { registerSchema, type RegisterInput } from '@/lib/validations/auth';
-import { useAuth } from '@/context/AuthContext';
-import { useRouter } from 'next/navigation';
-import Swal from 'sweetalert2';
-import Link from 'next/link';
-import { useState } from 'react';
-import { User, Mail, Lock, Loader2 } from 'lucide-react';
+import { FormField } from "@/components/forms/FormField";
+import { PasswordInput } from "@/components/forms/PasswordInput";
+import { Button } from "@/components/ui/button";
+import { useAuth } from "@/context/AuthContext";
+import { registerSchema, type RegisterInput } from "@/lib/validations/auth";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader2, Mail, User } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
 
 export default function RegisterPage() {
   const router = useRouter();
   const { register: registerUser } = useAuth();
-  const [isLoading, setIsLoading] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
     watch,
   } = useForm<RegisterInput>({
     resolver: zodResolver(registerSchema),
+    mode: "onChange",
+    reValidateMode: "onChange",
   });
 
-  const password = watch('password');
+  const password = watch("password") ?? "";
+
+  const passwordChecks = [
+    { label: "At least 8 characters", valid: password.length >= 8 },
+    { label: "One uppercase letter", valid: /[A-Z]/.test(password) },
+    { label: "One lowercase letter", valid: /[a-z]/.test(password) },
+    { label: "One number", valid: /[0-9]/.test(password) },
+  ];
 
   const onSubmit = async (data: RegisterInput) => {
-    setIsLoading(true);
+    setSubmitError(null);
+
     try {
-      await registerUser(data.username, data.email, data.password, data.displayName);
-      await Swal.fire({
-        title: 'Welcome!',
-        text: 'Account created successfully',
-        icon: 'success',
-        timer: 1500,
-        showConfirmButton: false,
+      const res = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          username: data.username,
+          email: data.email,
+          password: data.password,
+          displayName: data.displayName,
+        }),
       });
-      router.push('/feed');
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || "Registration failed");
+      }
+
+      const responseData = await res.json();
+      const email = responseData.data.email;
+
+      // Redirect to verify-email page with email as query parameter
+      router.push(`/verify-email?email=${encodeURIComponent(email)}`);
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Registration failed';
-      await Swal.fire({
-        title: 'Error!',
-        text: errorMessage,
-        icon: 'error',
-        confirmButtonText: 'Try Again',
-      });
-    } finally {
-      setIsLoading(false);
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Registration failed. Please try again.";
+      setSubmitError(errorMessage);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-100 flex items-center justify-center p-4">
-      <div className="w-full max-w-md bg-white rounded-lg shadow-xl overflow-hidden">
-        {/* Header */}
-        <div className="bg-gradient-to-r from-purple-600 to-pink-600 px-6 py-8 text-center">
-          <h1 className="text-3xl font-bold text-white mb-2">RootLink</h1>
-          <p className="text-purple-100">Family Heritage Social Platform</p>
-        </div>
+    <main className="min-h-screen bg-slate-50 py-10 px-4 sm:py-12">
+      <div className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[0.95fr_1.1fr] lg:items-center">
+        <section className="rounded-[2rem] border border-slate-200/80 bg-white/90 p-8 shadow-[0_30px_90px_-50px_rgba(15,23,42,0.25)] backdrop-blur-sm sm:p-10">
+          <div className="max-w-xl">
+            <span className="inline-flex rounded-full bg-fuchsia-100 px-3 py-1 text-sm font-semibold text-fuchsia-700">
+              Start your family legacy
+            </span>
+            <h1 className="mt-6 text-4xl font-semibold tracking-tight text-slate-900 sm:text-5xl">
+              Create your RootLink account
+            </h1>
+            <p className="mt-4 text-base leading-7 text-slate-600 sm:text-lg">
+              Bring your family closer with a secure account that protects your
+              stories and keeps your tree connected.
+            </p>
 
-        {/* Form */}
-        <form onSubmit={handleSubmit(onSubmit)} className="p-8">
-          <h2 className="text-2xl font-bold text-gray-800 mb-6">Create Account</h2>
-
-          {/* Display Name Field */}
-          <div className="mb-4">
-            <label htmlFor="displayName" className="block text-sm font-medium text-gray-700 mb-2">
-              Full Name
-            </label>
-            <div className="relative">
-              <User className="absolute left-3 top-3 text-gray-400 h-5 w-5" />
-              <input
-                {...register('displayName')}
-                type="text"
-                id="displayName"
-                placeholder="Enter your full name"
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition"
-              />
+            <div className="mt-10 grid gap-4 sm:grid-cols-2">
+              <div className="rounded-3xl border border-slate-200/70 bg-slate-50 p-5">
+                <p className="text-sm font-medium text-slate-900">
+                  Simple onboarding
+                </p>
+                <p className="mt-2 text-sm text-slate-600">
+                  Create your account in a few easy steps and start sharing
+                  family stories.
+                </p>
+              </div>
+              <div className="rounded-3xl border border-slate-200/70 bg-slate-50 p-5">
+                <p className="text-sm font-medium text-slate-900">
+                  Safe by design
+                </p>
+                <p className="mt-2 text-sm text-slate-600">
+                  Your credentials are validated and stored through secure
+                  authentication flows.
+                </p>
+              </div>
             </div>
-            {errors.displayName && (
-              <p className="text-red-500 text-sm mt-1">{errors.displayName.message}</p>
-            )}
+          </div>
+        </section>
+
+        <section className="rounded-[2rem] border border-slate-200/80 bg-white p-8 shadow-[0_40px_100px_-60px_rgba(15,23,42,0.25)] sm:p-10">
+          <div className="mb-8">
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">
+              Create account
+            </p>
+            <h2 className="mt-3 text-3xl font-semibold tracking-tight text-slate-900">
+              Welcome to RootLink
+            </h2>
+            <p className="mt-3 text-sm leading-6 text-slate-600">
+              Fill in the details below and choose a password that keeps your
+              family stories secure.
+            </p>
           </div>
 
-          {/* Username Field */}
-          <div className="mb-4">
-            <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-2">
-              Username
-            </label>
-            <div className="relative">
-              <User className="absolute left-3 top-3 text-gray-400 h-5 w-5" />
-              <input
-                {...register('username')}
-                type="text"
-                id="username"
-                placeholder="Choose a username"
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition"
-              />
+          {submitError ? (
+            <div
+              role="alert"
+              className="mb-6 rounded-3xl border border-red-200/80 bg-red-50 px-4 py-3 text-sm text-red-700"
+            >
+              {submitError}
             </div>
-            {errors.username && (
-              <p className="text-red-500 text-sm mt-1">{errors.username.message}</p>
-            )}
-          </div>
+          ) : null}
 
-          {/* Email Field */}
-          <div className="mb-4">
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-              Email
-            </label>
-            <div className="relative">
-              <Mail className="absolute left-3 top-3 text-gray-400 h-5 w-5" />
-              <input
-                {...register('email')}
-                type="email"
-                id="email"
-                placeholder="Enter your email"
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition"
-              />
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+            <FormField
+              label="Full name"
+              htmlFor="displayName"
+              helpText="Use the name you’d like your relatives to see."
+              error={errors.displayName?.message}
+            >
+              <div className="relative">
+                <User className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                <input
+                  {...register("displayName")}
+                  id="displayName"
+                  type="text"
+                  autoComplete="name"
+                  placeholder="Your full name"
+                  className="w-full rounded-2xl border border-slate-200 bg-white px-12 py-3 text-sm text-slate-900 shadow-sm outline-none transition focus:border-fuchsia-500 focus:ring-4 focus:ring-fuchsia-100"
+                />
+              </div>
+            </FormField>
+
+            <FormField
+              label="Username"
+              htmlFor="username"
+              helpText="Choose a unique username for logging in."
+              error={errors.username?.message}
+            >
+              <div className="relative">
+                <User className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                <input
+                  {...register("username")}
+                  id="username"
+                  type="text"
+                  autoComplete="username"
+                  placeholder="Choose a username"
+                  className="w-full rounded-2xl border border-slate-200 bg-white px-12 py-3 text-sm text-slate-900 shadow-sm outline-none transition focus:border-fuchsia-500 focus:ring-4 focus:ring-fuchsia-100"
+                />
+              </div>
+            </FormField>
+
+            <FormField
+              label="Email"
+              htmlFor="email"
+              helpText="We’ll use this email for account recovery and notifications."
+              error={errors.email?.message}
+            >
+              <div className="relative">
+                <Mail className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                <input
+                  {...register("email")}
+                  id="email"
+                  type="email"
+                  autoComplete="email"
+                  placeholder="you@example.com"
+                  className="w-full rounded-2xl border border-slate-200 bg-white px-12 py-3 text-sm text-slate-900 shadow-sm outline-none transition focus:border-fuchsia-500 focus:ring-4 focus:ring-fuchsia-100"
+                />
+              </div>
+            </FormField>
+
+            <PasswordInput
+              id="password"
+              label="Create a password"
+              register={register("password")}
+              error={errors.password?.message}
+              helpText="Your password should be strong and easy for you to remember."
+            />
+
+            <div className="rounded-3xl border border-slate-200/80 bg-slate-50 p-4">
+              <p className="text-sm font-semibold text-slate-900">
+                Password requirements
+              </p>
+              <ul className="mt-3 space-y-2 text-sm text-slate-600">
+                {passwordChecks.map((item) => (
+                  <li
+                    key={item.label}
+                    className={item.valid ? "text-emerald-600" : ""}
+                  >
+                    {item.valid ? "✓" : "○"} {item.label}
+                  </li>
+                ))}
+              </ul>
             </div>
-            {errors.email && (
-              <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
-            )}
-          </div>
 
-          {/* Password Field */}
-          <div className="mb-6">
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
-              Password
-            </label>
-            <div className="relative">
-              <Lock className="absolute left-3 top-3 text-gray-400 h-5 w-5" />
-              <input
-                {...register('password')}
-                type="password"
-                id="password"
-                placeholder="Create a password"
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition"
-              />
-            </div>
-            {errors.password && (
-              <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>
-            )}
-            {password && !errors.password && (
-              <p className="text-green-500 text-sm mt-1">✓ Password strength looks good</p>
-            )}
-          </div>
+            <Button
+              type="submit"
+              className="w-full rounded-2xl px-4 py-3 text-sm font-semibold"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Creating account...
+                </>
+              ) : (
+                "Create account"
+              )}
+            </Button>
+          </form>
 
-          {/* Password Requirements */}
-          <div className="mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
-            <p className="text-xs font-semibold text-gray-600 mb-2">Password Requirements:</p>
-            <ul className="text-xs text-gray-600 space-y-1">
-              <li className={password && password.length >= 8 ? 'text-green-600' : ''}>
-                ✓ At least 8 characters
-              </li>
-              <li className={password && /[A-Z]/.test(password) ? 'text-green-600' : ''}>
-                ✓ One uppercase letter
-              </li>
-              <li className={password && /[a-z]/.test(password) ? 'text-green-600' : ''}>
-                ✓ One lowercase letter
-              </li>
-              <li className={password && /[0-9]/.test(password) ? 'text-green-600' : ''}>
-                ✓ One number
-              </li>
-            </ul>
-          </div>
-
-          {/* Submit Button */}
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold py-2 px-4 rounded-lg hover:from-purple-700 hover:to-pink-700 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-          >
-            {isLoading ? (
-              <>
-                <Loader2 className="h-5 w-5 animate-spin" />
-                Creating Account...
-              </>
-            ) : (
-              'Sign Up'
-            )}
-          </button>
-
-          {/* Login Link */}
-          <p className="text-center text-gray-600 mt-6">
-            Already have an account?{' '}
-            <Link href="/login" className="text-purple-600 font-semibold hover:text-purple-700 transition">
-              Log in here
+          <p className="mt-6 text-center text-sm text-slate-600">
+            Already registered?{" "}
+            <Link
+              href="/login"
+              className="font-semibold text-slate-900 hover:text-sky-600"
+            >
+              Sign in
             </Link>
           </p>
-        </form>
+        </section>
       </div>
-    </div>
+    </main>
   );
 }

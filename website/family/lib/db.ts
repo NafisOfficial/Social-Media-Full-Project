@@ -1,10 +1,21 @@
 import mongoose from 'mongoose';
+import { Connection } from 'mongoose';
+
+
+declare global {
+  var mongoose: {
+    conn:  Connection | null;
+    promise: Promise<Connection> | null;
+  };
+}
+
+const uri = process.env.MONGODB_URI!;
 
 if (!process.env.MONGODB_URI) {
   throw new Error('Please add your MONGODB_URI to .env.local');
 }
 
-const uri = process.env.MONGODB_URI;
+
 let cached = global.mongoose;
 
 if (!cached) {
@@ -17,18 +28,26 @@ export async function connectDB() {
   }
 
   if (!cached.promise) {
-    cached.promise = mongoose.connect(uri).then(mongoose => {
-      return mongoose;
-    });
+    const opts = {
+      bufferCommands: false,
+      maxPoolSize: 10,
+    };
+
+    cached.promise = mongoose
+    .connect(uri, opts)
+    .then(()=>mongoose.connection);
   }
 
-  cached.conn = await cached.promise;
+  try {
+    cached.conn = await cached.promise;
+  } catch (error) {
+    cached.promise = null;
+    console.log("Can't connect to DB", error);
+    throw error;
+  }
+
   return cached.conn;
+  
 }
 
-declare global {
-  var mongoose: {
-    conn: typeof mongoose | null;
-    promise: Promise<typeof mongoose> | null;
-  };
-}
+

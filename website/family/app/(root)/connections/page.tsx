@@ -1,44 +1,61 @@
-'use client';
+import { ConnectionsManager } from "@/components/connections/ConnectionsManager";
+import { getAuthPayload } from "@/lib/auth";
+import { connectDB } from "@/lib/db";
+import ConnectionRequest from "@/models/ConnectionRequest";
 
-import { useSweetAlert } from '@/hooks/useSweetAlert';
-import { Users } from 'lucide-react';
+export default async function ConnectionsPage() {
+  const authPayload = await getAuthPayload();
 
-export default function ConnectionsPage() {
-  const { showInfo } = useSweetAlert();
+  if (!authPayload) {
+    return (
+      <main className="min-h-screen bg-slate-50 px-4 py-10 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-5xl text-center">
+          <p className="text-lg font-semibold text-slate-900">
+            Sign in to manage your connections.
+          </p>
+        </div>
+      </main>
+    );
+  }
 
-  const handleSendRequest = async () => {
-    await showInfo('Coming Soon!', 'Connection requests feature coming soon');
-  };
+  await connectDB();
+
+  const requests = await ConnectionRequest.find({
+    $or: [{ sender: authPayload.userId }, { receiver: authPayload.userId }],
+  })
+    .populate("sender", "username displayName")
+    .populate("receiver", "username displayName")
+    .lean();
+
+  const pending = requests
+    .filter((request) => request.status === "pending")
+    .map((request) => ({
+      _id: request._id.toString(),
+      senderUsername:
+        typeof request.sender === "object" ? request.sender.username : "",
+      receiverUsername:
+        typeof request.receiver === "object" ? request.receiver.username : "",
+      relationshipType: request.relationshipType,
+      status: request.status,
+    }));
+
+  const accepted = requests
+    .filter((request) => request.status === "accepted")
+    .map((request) => ({
+      _id: request._id.toString(),
+      senderUsername:
+        typeof request.sender === "object" ? request.sender.username : "",
+      receiverUsername:
+        typeof request.receiver === "object" ? request.receiver.username : "",
+      relationshipType: request.relationshipType,
+      status: request.status,
+    }));
 
   return (
-    <div className="p-8">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold text-gray-800 mb-8">Connections</h1>
-
-        <div className="grid grid-cols-2 gap-6">
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-lg font-semibold text-gray-800 mb-4">Pending Requests</h2>
-            <p className="text-gray-600 text-center py-8">No pending requests</p>
-          </div>
-
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-lg font-semibold text-gray-800 mb-4">My Connections</h2>
-            <p className="text-gray-600 text-center py-8">No connections yet</p>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-lg shadow-md p-12 text-center mt-6">
-          <Users className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-xl font-semibold text-gray-800 mb-2">Connect with Family</h3>
-          <p className="text-gray-600 mb-6">Send connection requests to family members</p>
-          <button
-            onClick={handleSendRequest}
-            className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold"
-          >
-            Send Connection Request
-          </button>
-        </div>
+    <main className="min-h-screen bg-slate-50 px-4 py-10 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-6xl">
+        <ConnectionsManager pending={pending} accepted={accepted} />
       </div>
-    </div>
+    </main>
   );
 }

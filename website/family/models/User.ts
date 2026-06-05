@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const UserSchema = new mongoose.Schema(
   {
@@ -29,16 +29,25 @@ const UserSchema = new mongoose.Schema(
     },
     bio: {
       type: String,
-      default: '',
+      default: "",
       maxlength: 500,
     },
     avatarUrl: {
       type: String,
-      default: '',
+      default: "",
     },
     coverUrl: {
       type: String,
-      default: '',
+      default: "",
+    },
+    // Fields for password reset flow
+    resetPasswordToken: {
+      type: String,
+      default: null,
+    },
+    resetPasswordExpires: {
+      type: Date,
+      default: null,
     },
     dateOfBirth: {
       type: Date,
@@ -46,14 +55,27 @@ const UserSchema = new mongoose.Schema(
     },
     gender: {
       type: String,
-      enum: ['male', 'female', 'other', 'prefer_not_to_say'],
-      default: 'prefer_not_to_say',
+      enum: ["male", "female", "other", "prefer_not_to_say"],
+      default: "prefer_not_to_say",
+    },
+    // Fields for email verification via OTP
+    otp: {
+      type: String,
+      default: null,
+    },
+    otpExpires: {
+      type: Date,
+      default: null,
+    },
+    isEmailVerified: {
+      type: Boolean,
+      default: false,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 UserSchema.index({ username: 1 });
 UserSchema.index({ email: 1 });
 
-export default mongoose.models.User || mongoose.model('User', UserSchema);
+export default mongoose.models.User || mongoose.model("User", UserSchema);

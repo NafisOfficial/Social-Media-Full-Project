@@ -1,12 +1,12 @@
-import Swal, { SweetAlertIcon } from 'sweetalert2';
+import Swal, { SweetAlertIcon } from "sweetalert2";
 
 export function useSweetAlert() {
   const showSuccess = async (title: string, message?: string) => {
     return await Swal.fire({
       title,
       text: message,
-      icon: 'success',
-      confirmButtonText: 'OK',
+      icon: "success",
+      confirmButtonText: "OK",
     });
   };
 
@@ -14,8 +14,8 @@ export function useSweetAlert() {
     return await Swal.fire({
       title,
       text: message,
-      icon: 'error',
-      confirmButtonText: 'OK',
+      icon: "error",
+      confirmButtonText: "OK",
     });
   };
 
@@ -23,8 +23,8 @@ export function useSweetAlert() {
     return await Swal.fire({
       title,
       text: message,
-      icon: 'info',
-      confirmButtonText: 'OK',
+      icon: "info",
+      confirmButtonText: "OK",
     });
   };
 
@@ -32,23 +32,41 @@ export function useSweetAlert() {
     return await Swal.fire({
       title,
       text: message,
-      icon: 'warning',
-      confirmButtonText: 'OK',
+      icon: "warning",
+      confirmButtonText: "OK",
     });
   };
 
-  const showConfirm = async (title: string, message?: string, confirmText = 'Confirm', cancelText = 'Cancel') => {
+  const showConfirm = async (
+    title: string,
+    message?: string,
+    confirmText = "Confirm",
+    cancelText = "Cancel",
+  ) => {
     return await Swal.fire({
       title,
       text: message,
-      icon: 'question',
+      icon: "question",
       showCancelButton: true,
-      confirmButtonText,
-      cancelButtonText,
+      confirmButtonText: confirmText,
+      cancelButtonText: cancelText,
     });
   };
 
-  const showToast = async (title: string, icon: SweetAlertIcon = 'success', position: 'top' | 'top-end' | 'top-start' | 'center' | 'center-end' | 'center-start' | 'bottom' | 'bottom-end' | 'bottom-start' = 'top-end') => {
+  const showToast = async (
+    title: string,
+    icon: SweetAlertIcon = "success",
+    position:
+      | "top"
+      | "top-end"
+      | "top-start"
+      | "center"
+      | "center-end"
+      | "center-start"
+      | "bottom"
+      | "bottom-end"
+      | "bottom-start" = "top-end",
+  ) => {
     const Toast = Swal.mixin({
       toast: true,
       position,
@@ -63,13 +81,13 @@ export function useSweetAlert() {
     });
   };
 
-  const showLoading = async (title: string = 'Loading...') => {
+  const showLoading = async (title: string = "Loading...") => {
     Swal.fire({
       title,
       allowOutsideClick: false,
       allowEscapeKey: false,
-      didOpen: async (modal) => {
-        await Swal.showLoadingAsync();
+      didOpen: () => {
+        Swal.showLoading();
       },
     });
   };

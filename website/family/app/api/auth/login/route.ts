@@ -1,9 +1,9 @@
-import { connectDB } from '@/lib/db';
-import { signToken, setAuthCookie } from '@/lib/auth';
-import { loginSchema } from '@/lib/validations/auth';
-import User from '@/models/User';
-import bcrypt from 'bcryptjs';
-import { NextResponse } from 'next/server';
+import { setAuthCookie, signToken } from "@/lib/auth";
+import { connectDB } from "@/lib/db";
+import { loginSchema } from "@/lib/validations/auth";
+import User from "@/models/User";
+import bcrypt from "bcryptjs";
+import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
   try {
@@ -14,20 +14,20 @@ export async function POST(request: Request) {
 
     if (!validation.success) {
       return NextResponse.json(
-        { error: 'Invalid input', details: validation.error.flatten() },
-        { status: 400 }
+        { error: "Invalid input", details: validation.error.flatten() },
+        { status: 400 },
       );
     }
 
-    const { username, password } = validation.data;
+    const { email, password } = validation.data;
 
-    // Find user by username
-    const user = await User.findOne({ username: username.toLowerCase() });
+    // Find user by email
+    const user = await User.findOne({ email: email.toLowerCase() });
 
     if (!user) {
       return NextResponse.json(
-        { error: 'Invalid username or password' },
-        { status: 401 }
+        { error: "Invalid email or password" },
+        { status: 401 },
       );
     }
 
@@ -36,8 +36,8 @@ export async function POST(request: Request) {
 
     if (!passwordMatch) {
       return NextResponse.json(
-        { error: 'Invalid username or password' },
-        { status: 401 }
+        { error: "Invalid email or password" },
+        { status: 401 },
       );
     }
 
@@ -59,12 +59,15 @@ export async function POST(request: Request) {
           coverUrl: user.coverUrl,
         },
       },
-      { status: 200 }
+      { status: 200 },
     );
 
     return await setAuthCookie(response, token);
   } catch (error) {
-    console.error('Login error:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    console.error("Login error:", error);
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 },
+    );
   }
 }

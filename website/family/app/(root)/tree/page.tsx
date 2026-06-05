@@ -1,32 +1,41 @@
-'use client';
+import { TreeManager } from "@/components/tree/TreeManager";
+import { getAuthPayload } from "@/lib/auth";
+import { connectDB } from "@/lib/db";
+import FamilyMember from "@/models/FamilyMember";
+import FamilyRelationship from "@/models/FamilyRelationship";
 
-import { useSweetAlert } from '@/hooks/useSweetAlert';
-import { Trees } from 'lucide-react';
+export default async function TreePage() {
+  const authPayload = await getAuthPayload();
 
-export default function TreePage() {
-  const { showInfo } = useSweetAlert();
+  if (!authPayload) {
+    return (
+      <main className="min-h-screen bg-slate-50 px-4 py-10 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-5xl text-center">
+          <p className="text-lg font-semibold text-slate-900">
+            Sign in to view your family tree.
+          </p>
+        </div>
+      </main>
+    );
+  }
 
-  const handleAddMember = async () => {
-    await showInfo('Coming Soon!', 'Family tree visualization and member management coming soon');
-  };
+  await connectDB();
+
+  const members = await FamilyMember.find({
+    treeOwner: authPayload.userId,
+  }).lean();
+  const relationships = await FamilyRelationship.find({
+    treeOwner: authPayload.userId,
+  }).lean();
 
   return (
-    <div className="p-8">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold text-gray-800 mb-8">My Family Tree</h1>
-
-        <div className="bg-white rounded-lg shadow-md p-12 text-center">
-          <Trees className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-xl font-semibold text-gray-800 mb-2">Family Tree</h3>
-          <p className="text-gray-600 mb-6">Build and visualize your family tree here</p>
-          <button
-            onClick={handleAddMember}
-            className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold"
-          >
-            Add Family Member
-          </button>
-        </div>
+    <main className="min-h-screen bg-slate-50 px-4 py-10 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-6xl">
+        <TreeManager
+          members={JSON.parse(JSON.stringify(members))}
+          relationships={JSON.parse(JSON.stringify(relationships))}
+        />
       </div>
-    </div>
+    </main>
   );
 }

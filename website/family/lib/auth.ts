@@ -9,7 +9,7 @@ export interface TokenPayload {
   exp: number;
 }
 
-const AUTH_SECRET = process.env.AUTH_SECRET;
+const AUTH_SECRET = process.env.AUTH_SECRET!;
 const TOKEN_EXPIRY = 7 * 24 * 60 * 60; // 7 days in seconds
 const COOKIE_NAME = 'token';
 
