@@ -79,16 +79,18 @@ export async function POST(
     });
 
     let userVote: "up" | "down" | null = null;
+    let shouldNotify = false;
 
     if (existingVote) {
       if (existingVote.type === validation.data.type) {
+        // Toggle off — remove vote
         await existingVote.deleteOne();
         await Story.findByIdAndUpdate(story._id, {
-          $inc: {
-            [`${validation.data.type}votesCount`]: -1,
-          },
+          $inc: { [`${validation.data.type}votesCount`]: -1 },
         });
+        userVote = null;
       } else {
+        // Switch vote type
         await Vote.findByIdAndUpdate(existingVote._id, {
           type: validation.data.type,
         });
@@ -99,12 +101,21 @@ export async function POST(
           },
         });
         userVote = validation.data.type;
+        shouldNotify = story.author.toString() !== authResult.userId;
       }
+    } else {
+      // New vote
+      await Vote.create({
+        user: authResult.userId,
+        story: story._id,
+        type: validation.data.type,
+      });
+      await Story.findByIdAndUpdate(story._id, {
+        $inc: { [`${validation.data.type}votesCount`]: 1 },
+      });
+      userVote = validation.data.type;
+      shouldNotify = story.author.toString() !== authResult.userId;
     }
-
-    const shouldNotify =
-      (!existingVote || existingVote.type !== validation.data.type) &&
-      story.author.toString() !== authResult.userId;
 
     if (shouldNotify) {
       const notificationType =
@@ -118,17 +129,8 @@ export async function POST(
     }
 
     const updatedStory = await Story.findById(params.id);
-
     if (!updatedStory) {
       return NextResponse.json({ error: "Story not found" }, { status: 404 });
-    }
-
-    if (
-      !userVote &&
-      existingVote &&
-      existingVote.type === validation.data.type
-    ) {
-      userVote = null;
     }
 
     return NextResponse.json(

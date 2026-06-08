@@ -346,7 +346,23 @@ story-create: done
 story-feed: done
 story-vote: done
 story-comment: done
-relatives-only-visibility: pending
-notifications: pending
+relatives-only-visibility: done
+notifications: done
 explore-search: pending
 image-upload: pending
+
+## NOTIFICATIONS IMPLEMENTATION NOTES
+
+Notification badge lives in components/layout/Sidebar.tsx via hooks/useUnreadNotifications.ts.
+Badge polls /api/notifications every 30 s (TanStack Query refetchInterval).
+Query key prefix: ["notifications"] — invalidating this key clears both the list and the badge.
+Per-item mark-as-read: POST /api/notifications/[id]/read (app/api/notifications/[id]/read/route.ts).
+Mark-all-read: POST /api/notifications/read (app/api/notifications/read/route.ts).
+Notifications page auto-marks-all-read on mount (clears badge when user opens the page).
+NotificationItem renders actor avatar, type-specific icon badge, relative timestamp, and marks itself read on click.
+Notification types: connection_request | connection_accepted | story_upvote | story_downvote | story_comment.
+Notifications are created by:
+  - POST /api/connections/request (connection_request → receiver)
+  - POST /api/connections/[id]/accept (connection_accepted → sender)
+  - POST /api/stories/[id]/vote (story_upvote | story_downvote → story author)
+  - POST /api/stories/[id]/comments (story_comment → story author)

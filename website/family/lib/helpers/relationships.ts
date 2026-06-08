@@ -1,7 +1,8 @@
 import { RelationshipType } from '@/types';
 
 export function inferInverseRelationship(type: RelationshipType, gender?: 'male' | 'female' | 'other' | 'prefer_not_to_say'): RelationshipType {
-  const inverseMap: Record<RelationshipType, RelationshipType | 'son/daughter'> = {
+  type IntermediateInverse = RelationshipType | 'son/daughter' | 'brother/sister' | 'grandson/granddaughter' | 'nephew/niece';
+  const inverseMap: Record<RelationshipType, IntermediateInverse> = {
     father: 'son/daughter' as any,
     mother: 'son/daughter' as any,
     son: 'father',

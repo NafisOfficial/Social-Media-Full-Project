@@ -1,6 +1,5 @@
 import RightWidgets from "@/components/layout/RightWidgets";
 import Sidebar from "@/components/layout/Sidebar";
-import Topbar from "@/components/layout/Topbar";
 
 export default function RootLayout({
   children,
@@ -16,8 +15,6 @@ export default function RootLayout({
         Skip to content
       </a>
 
-      <Topbar />
-
       <Sidebar />
 
       <main
@@ -31,3 +28,4 @@ export default function RootLayout({
     </div>
   );
 }
+

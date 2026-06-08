@@ -8,6 +8,7 @@ import { loginSchema, type LoginInput } from "@/lib/validations/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, Mail } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -45,33 +46,40 @@ export default function LoginPage() {
   return (
     <main className="min-h-screen bg-slate-50 py-10 px-4 sm:py-12">
       <div className="mx-auto flex min-h-[calc(100vh-2.5rem)] max-w-6xl flex-col justify-center gap-8 lg:grid lg:grid-cols-[1.1fr_0.95fr] lg:items-center">
-        <section className="rounded-[2rem] border border-slate-200/80 bg-white/90 p-8 shadow-[0_30px_90px_-50px_rgba(15,23,42,0.25)] backdrop-blur-sm sm:p-10">
-          <div className="max-w-xl">
-            <span className="inline-flex rounded-full bg-sky-100 px-3 py-1 text-sm font-semibold text-sky-700">
+        <section className="relative overflow-hidden rounded-[2rem] border border-slate-200/80 bg-slate-950 min-h-[500px] flex items-center p-8 shadow-[0_30px_90px_-50px_rgba(15,23,42,0.25)] sm:p-10">
+          <Image
+            src="https://images.unsplash.com/photo-1511895426328-dc8714191300?auto=format&fit=crop&w=1000&q=80"
+            alt="Family gathered together"
+            fill
+            className="absolute inset-0 object-cover opacity-40"
+            priority
+          />
+          <div className="relative z-10 w-full max-w-xl rounded-3xl bg-white/80 p-6 shadow-xl border border-white/40 backdrop-blur-md sm:p-8">
+            <span className="inline-flex rounded-full bg-sky-100 px-3 py-1 text-xs font-semibold text-sky-700">
               Build the family story you’ll be proud to share
             </span>
-            <h1 className="mt-6 text-4xl font-semibold tracking-tight text-slate-900 sm:text-5xl">
+            <h1 className="mt-4 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
               Welcome back to RootLink
             </h1>
-            <p className="mt-4 text-base leading-7 text-slate-600 sm:text-lg">
+            <p className="mt-3 text-sm leading-relaxed text-slate-700 sm:text-base">
               Sign in quickly and securely to continue growing your family tree,
               sharing stories, and connecting with relatives.
             </p>
-            <div className="mt-10 grid gap-4 sm:grid-cols-2">
-              <div className="rounded-3xl border border-slate-200/70 bg-slate-50 p-5">
-                <p className="text-sm font-medium text-slate-900">
+            <div className="mt-8 grid gap-3 sm:grid-cols-2">
+              <div className="rounded-2xl border border-slate-200/50 bg-white/40 p-4">
+                <p className="text-xs font-bold text-slate-900 uppercase tracking-wide">
                   Fast access
                 </p>
-                <p className="mt-2 text-sm text-slate-600">
+                <p className="mt-1 text-xs text-slate-700">
                   Remembered sessions help you come back to the stories that
                   matter.
                 </p>
               </div>
-              <div className="rounded-3xl border border-slate-200/70 bg-slate-50 p-5">
-                <p className="text-sm font-medium text-slate-900">
+              <div className="rounded-2xl border border-slate-200/50 bg-white/40 p-4">
+                <p className="text-xs font-bold text-slate-900 uppercase tracking-wide">
                   Protected data
                 </p>
-                <p className="mt-2 text-sm text-slate-600">
+                <p className="mt-1 text-xs text-slate-700">
                   Your profile connection is secured with token-based
                   authentication and safe cookies.
                 </p>

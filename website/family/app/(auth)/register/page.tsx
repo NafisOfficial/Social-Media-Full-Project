@@ -8,6 +8,7 @@ import { registerSchema, type RegisterInput } from "@/lib/validations/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, Mail, User } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -74,34 +75,40 @@ export default function RegisterPage() {
   return (
     <main className="min-h-screen bg-slate-50 py-10 px-4 sm:py-12">
       <div className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[0.95fr_1.1fr] lg:items-center">
-        <section className="rounded-[2rem] border border-slate-200/80 bg-white/90 p-8 shadow-[0_30px_90px_-50px_rgba(15,23,42,0.25)] backdrop-blur-sm sm:p-10">
-          <div className="max-w-xl">
-            <span className="inline-flex rounded-full bg-fuchsia-100 px-3 py-1 text-sm font-semibold text-fuchsia-700">
+        <section className="relative overflow-hidden rounded-[2rem] border border-slate-200/80 bg-slate-950 min-h-[500px] flex items-center p-8 shadow-[0_30px_90px_-50px_rgba(15,23,42,0.25)] sm:p-10">
+          <Image
+            src="https://images.unsplash.com/photo-1509099836639-18ba1795216d?auto=format&fit=crop&w=1000&q=80"
+            alt="Multi-generational family walking"
+            fill
+            className="absolute inset-0 object-cover opacity-40"
+            priority
+          />
+          <div className="relative z-10 w-full max-w-xl rounded-3xl bg-white/80 p-6 shadow-xl border border-white/40 backdrop-blur-md sm:p-8">
+            <span className="inline-flex rounded-full bg-fuchsia-100 px-3 py-1 text-xs font-semibold text-fuchsia-700">
               Start your family legacy
             </span>
-            <h1 className="mt-6 text-4xl font-semibold tracking-tight text-slate-900 sm:text-5xl">
+            <h1 className="mt-4 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
               Create your RootLink account
             </h1>
-            <p className="mt-4 text-base leading-7 text-slate-600 sm:text-lg">
+            <p className="mt-3 text-sm leading-relaxed text-slate-700 sm:text-base">
               Bring your family closer with a secure account that protects your
               stories and keeps your tree connected.
             </p>
-
-            <div className="mt-10 grid gap-4 sm:grid-cols-2">
-              <div className="rounded-3xl border border-slate-200/70 bg-slate-50 p-5">
-                <p className="text-sm font-medium text-slate-900">
+            <div className="mt-8 grid gap-3 sm:grid-cols-2">
+              <div className="rounded-2xl border border-slate-200/50 bg-white/40 p-4">
+                <p className="text-xs font-bold text-slate-900 uppercase tracking-wide">
                   Simple onboarding
                 </p>
-                <p className="mt-2 text-sm text-slate-600">
+                <p className="mt-1 text-xs text-slate-700">
                   Create your account in a few easy steps and start sharing
                   family stories.
                 </p>
               </div>
-              <div className="rounded-3xl border border-slate-200/70 bg-slate-50 p-5">
-                <p className="text-sm font-medium text-slate-900">
+              <div className="rounded-2xl border border-slate-200/50 bg-white/40 p-4">
+                <p className="text-xs font-bold text-slate-900 uppercase tracking-wide">
                   Safe by design
                 </p>
-                <p className="mt-2 text-sm text-slate-600">
+                <p className="mt-1 text-xs text-slate-700">
                   Your credentials are validated and stored through secure
                   authentication flows.
                 </p>

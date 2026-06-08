@@ -7,10 +7,12 @@ import {
   ChevronRight,
   Heart,
   Share2,
+  Sparkles,
   TreePine,
   Users,
 } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
@@ -30,28 +32,28 @@ export default function Home() {
       relation: "Family keeper",
       quote:
         "I've been asking cousins for family stories for years. With RootLink, my family actually wants to share. We've discovered stories we never knew existed.",
-      image: "👩",
+      image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&h=150&q=80",
     },
     {
       name: "James K.",
       relation: "Grandpa",
       quote:
         "Building a family tree used to mean hours on Excel. This just works. My grandkids finally understand where we come from.",
-      image: "👨‍🦳",
+      image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=150&h=150&q=80",
     },
     {
       name: "Amita L.",
       relation: "Global family",
       quote:
         "We're spread across four countries. RootLink keeps us connected in a way Facebook never did. My kids know their cousins again.",
-      image: "👩‍👧",
+      image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=150&h=150&q=80",
     },
     {
       name: "Michael T.",
       relation: "Family reunion organizer",
       quote:
         "Before reunions, I manually track who's coming. Now everyone's already connected. It's made planning so much easier.",
-      image: "👨",
+      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&h=150&q=80",
     },
   ];
 
@@ -208,13 +210,18 @@ export default function Home() {
             </div>
 
             {/* Hero Image */}
-            <div className="hidden lg:block">
-              <div className="bg-linear-to-br from-emerald-50 to-teal-50 rounded-2xl p-8 aspect-square flex items-center justify-center">
-                <div className="text-center">
-                  <TreePine className="w-24 h-24 text-emerald-600/30 mx-auto mb-4" />
-                  <p className="text-gray-600 font-medium">
-                    Your family tree in one place
-                  </p>
+            <div className="hidden lg:block relative h-[450px] w-full rounded-3xl overflow-hidden shadow-2xl border border-slate-200/80 bg-slate-100">
+              <Image
+                src="https://images.unsplash.com/photo-1542038784456-1ea8e935640e?auto=format&fit=crop&w=800&q=80"
+                alt="Family gathering and memories"
+                fill
+                className="object-cover"
+                priority
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-slate-900/10 to-transparent flex items-end p-8">
+                <div className="text-white">
+                  <p className="text-xs font-semibold tracking-widest uppercase text-emerald-400">Preserving Moments</p>
+                  <h3 className="text-xl font-bold mt-1">Your family tree & stories in one secure place</h3>
                 </div>
               </div>
             </div>
@@ -351,10 +358,13 @@ export default function Home() {
             ))}
           </div>
 
-          <p className="text-center text-gray-600 mt-12">
-            💡 <span className="font-medium">Pro tip:</span> Start with your
-            immediate family. You can add more people and branches anytime.
-          </p>
+          <div className="flex items-center gap-3 text-slate-600 mt-12 bg-emerald-50/70 border border-emerald-100/80 rounded-2xl p-4 max-w-lg mx-auto">
+            <Sparkles className="w-5 h-5 text-emerald-600 shrink-0" />
+            <p className="text-sm leading-relaxed">
+              <span className="font-semibold text-emerald-800">Pro tip:</span> Start with your
+              immediate family. You can add more people and branches anytime.
+            </p>
+          </div>
         </div>
       </section>
 
@@ -367,21 +377,30 @@ export default function Home() {
 
           <div className="grid md:grid-cols-3 gap-8">
             {testimonials.map((testimonial, i) => (
-              <div key={i} className="bg-gray-50 p-8 rounded-lg">
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="text-4xl">{testimonial.image}</div>
-                  <div>
-                    <p className="font-semibold text-gray-900">
-                      {testimonial.name}
-                    </p>
-                    <p className="text-sm text-gray-600">
-                      {testimonial.relation}
-                    </p>
+              <div key={i} className="bg-slate-50 p-8 rounded-3xl border border-slate-200/60 shadow-xs hover:shadow-md transition duration-250 flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center gap-4 mb-6">
+                    <div className="relative w-12 h-12 rounded-full overflow-hidden border-2 border-emerald-500/30 shrink-0">
+                      <Image
+                        src={testimonial.image}
+                        alt={testimonial.name}
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                    <div>
+                      <p className="font-semibold text-slate-900 leading-tight">
+                        {testimonial.name}
+                      </p>
+                      <p className="text-xs text-slate-500 mt-1 font-medium">
+                        {testimonial.relation}
+                      </p>
+                    </div>
                   </div>
+                  <blockquote className="text-slate-600 text-sm leading-relaxed italic">
+                    &quot;{testimonial.quote}&quot;
+                  </blockquote>
                 </div>
-                <blockquote className="text-gray-700 italic">
-                  &quot;{testimonial.quote}&quot;
-                </blockquote>
               </div>
             ))}
           </div>
